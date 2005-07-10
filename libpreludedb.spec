@@ -31,7 +31,7 @@ of the type/format of the database.
 %package devel
 Summary:	Header files and develpment documentation for libpreludedb
 Group:		Development/Libraries
-Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
+Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description devel
 Header files and develpment documentation for libpreludedb.
