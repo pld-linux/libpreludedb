@@ -1,5 +1,6 @@
 %include	/usr/lib/rpm/macros.perl
 Summary:	The PreludeDB Library
+Summary(pl):	Biblioteka PreludeDB
 Name:		libpreludedb
 %define	_rc	rc8
 Version:	0.9.0
@@ -9,15 +10,15 @@ Group:		Libraries
 Source0:	http://www.prelude-ids.org/download/releases/%{name}-%{version}-%{_rc}.tar.gz
 # Source0-md5:	cbc7a78a5fbdb8efc640131abbb95d21
 URL:		http://www.prelude-ids.org/
-BuildRequires:	perl-devel
-BuildRequires:	python-devel
-BuildRequires:	libprelude-devel >= 0.9.0
-BuildRequires:	mysql-devel
-BuildRequires:	postgresql-devel
-BuildRequires:	pkgconfig
-BuildRequires:	gtk-doc
 BuildRequires:	bison
 BuildRequires:	flex
+BuildRequires:	gtk-doc
+BuildRequires:	libprelude-devel >= 0.9.0
+BuildRequires:	mysql-devel
+BuildRequires:	perl-devel
+BuildRequires:	pkgconfig
+BuildRequires:	postgresql-devel
+BuildRequires:	python-devel
 BuildRequires:	rpm-perlprov
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -28,35 +29,58 @@ developers to use the Prelude IDMEF database easily and efficiently
 without worrying about SQL, and to access the database independently
 of the type/format of the database.
 
+%description -l pl
+Biblioteka PreludeDB dostarcza warstwê abstrakcji ponad rodzajem i
+formatem bazy danych u¿ywanej do przechowywania alarmów IDMEF.
+Pozwala programistom ³atwo i wydajnie u¿ywaæ bazy danych IDMEF Prelude
+nie martwi±c siê o SQL i dostawaæ siê do bazy niezale¿nie od jej
+rodzaju/formatu.
+
 %package devel
-Summary:	Header files and develpment documentation for libpreludedb
+Summary:	Header files and development documentation for libpreludedb
+Summary(pl):	Pliki nag³ówkowe i dokumentacja programistyczna do libpreludedb
 Group:		Development/Libraries
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	%{name} = %{version}-%{release}
 
 %description devel
-Header files and develpment documentation for libpreludedb.
+Header files and development documentation for libpreludedb.
+
+%description devel -l pl
+Pliki nag³ówkowe i dokumentacja programistyczna do libpreludedb.
 
 %package static
 Summary:	Static libpreludedb library
+Summary(pl):	Statyczna biblioteka libpreludedb
 Group:		Development/Libraries
-Requires:	%{name}-devel = %{epoch}:%{version}-%{release}
+Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 Static libpreludedb library.
 
+%description static -l pl
+Statyczna biblioteka libpreludedb.
+
 %package -n perl-libpreludedb
-Summary:	libpreludedb perl bindings
+Summary:	libpreludedb Perl bindings
+Summary(pl):	Dowi±zania Perla do libpreludedb
 Group:		Development/Languages/Perl
 
 %description -n perl-libpreludedb
-libpreludedb perl bindings.
+libpreludedb Perl bindings.
+
+%description -n perl-libpreludedb -l pl
+Dowi±zania Perla do libpreludedb.
 
 %package -n python-libpreludedb
-Summary:	libpreludedb python bindings
+Summary:	libpreludedb Python bindings
+Summary(pl):	Dowi±zania Pythona do libpreludedb
 Group:		Development/Languages/Python
 
 %description -n python-libpreludedb
-libpreludedb python bindings.
+libpreludedb Python bindings.
+
+%description -n python-libpreludedb -l pl
+Dowi±zania Pythona do libpreludedb.
 
 %prep
 %setup -q -n %{name}-%{version}-%{_rc}
@@ -90,8 +114,8 @@ cd ../..
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
+%post	-p /sbin/ldconfig
+%postun	-p /sbin/ldconfig
 
 %files
 %defattr(644,root,root,755)
