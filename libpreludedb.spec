@@ -2,18 +2,17 @@
 Summary:	The PreludeDB Library
 Summary(pl):	Biblioteka PreludeDB
 Name:		libpreludedb
-%define	_rc	rc8
-Version:	0.9.0
-Release:	0.%{_rc}.1
+Version:	0.9.7.1
+Release:	0.1
 License:	GPL
 Group:		Libraries
-Source0:	http://www.prelude-ids.org/download/releases/%{name}-%{version}-%{_rc}.tar.gz
-# Source0-md5:	cbc7a78a5fbdb8efc640131abbb95d21
+Source0:	http://www.prelude-ids.org/download/releases/%{name}-%{version}.tar.gz
+# Source0-md5:	7137575a3c907348296a386206ecc941
 URL:		http://www.prelude-ids.org/
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	gtk-doc
-BuildRequires:	libprelude-devel >= 0.9.0
+BuildRequires:	libprelude-devel >= 0.9.6
 BuildRequires:	mysql-devel
 BuildRequires:	perl-devel
 BuildRequires:	pkgconfig
@@ -83,7 +82,7 @@ libpreludedb Python bindings.
 Dowi±zania Pythona do libpreludedb.
 
 %prep
-%setup -q -n %{name}-%{version}-%{_rc}
+%setup -q -n %{name}-%{version}
 
 %build
 %configure \
@@ -120,7 +119,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README
-%attr(755,root,root) %{_bindir}/prelude-db-create.sh
+%attr(755,root,root) %{_bindir}/preludedb-admin
 %attr(755,root,root) %{_libdir}/lib*.so.*.*
 %dir %{_libdir}/%{name}
 %dir %{_libdir}/%{name}/plugins
