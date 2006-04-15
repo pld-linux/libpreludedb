@@ -82,7 +82,7 @@ libpreludedb Python bindings.
 Dowi±zania Pythona do libpreludedb.
 
 %prep
-%setup -q -n %{name}-%{version}
+%setup -q
 
 %build
 %configure \
