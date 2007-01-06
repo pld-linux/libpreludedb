@@ -10,7 +10,7 @@ Summary:	The PreludeDB Library
 Summary(pl):	Biblioteka PreludeDB
 Name:		libpreludedb
 Version:	0.9.11
-Release:	1
+Release:	2
 License:	GPL
 Group:		Libraries
 Source0:	http://www.prelude-ids.org/download/releases/%{name}-%{version}.tar.gz
@@ -56,43 +56,43 @@ Libpreludedb library
 %description libs -l pl
 Biblioteka libpreludedb
 
-%package db-pgsql
+%package pgsql
 Summary:	PostgreSQL backend for libpreludedb
 Summary(pl):	Interfejs do PostgreSQL dla libpreludedb
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 Provides:	%{name}(DB_driver) = %{version}-%{release}
 
-%description db-pgsql
+%description pgsql
 PostgreSQL backend for libpreludedb
 
-%description db-pgsql -l pl
+%description pgsql -l pl
 Interfejs do PostgreSQL do libpreludedb
 
-%package db-mysql
+%package mysql
 Summary:	MySQL backend for libpreludedb
 Summary(pl):	Interfejs do MySQL dla libpreludedb
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 Provides:	%{name}(DB_driver) = %{version}-%{release}
 
-%description db-mysql
+%description mysql
 MySQL backend for libpreludedb
 
-%description db-mysql -l pl
+%description mysql -l pl
 Interfejs do MySQL do libpreludedb
 
-%package db-sqlite3
+%package sqlite3
 Summary:	SQLite3 backend for libpreludedb
 Summary(pl):	Interfejs do SQLite3 dla libpreludedb
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 Provides:	%{name}(DB_driver) = %{version}-%{release}
 
-%description db-sqlite3
+%description sqlite3
 SQLite3 backend for libpreludedb
 
-%description db-sqlite3 -l pl
+%description sqlite3 -l pl
 Interfejs do SQLite3 do libpreludedb
 
 %package devel
@@ -164,6 +164,9 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
+# are generating wrong dependencies (and are not needed anyway)
+find $RPM_BUILD_ROOT -iregex .*.la -exec rm {} \;
+
 %if %{with perl}
 cd bindings/perl && %{__perl} Makefile.PL \
         INSTALLDIRS=vendor
@@ -197,15 +200,6 @@ fi
 %post libs -p /sbin/ldconfig
 %postun libs -p /sbin/ldconfig
 
-%post db-pgsql -p /sbin/ldconfig
-%postun db-pgsql -p /sbin/ldconfig
-
-%post db-mysql -p /sbin/ldconfig
-%postun db-mysql -p /sbin/ldconfig
-
-%post db-sqlite3 -p /sbin/ldconfig
-%postun db-sqlite3 -p /sbin/ldconfig
-
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README
@@ -219,30 +213,32 @@ fi
 %dir %{_libdir}/%{name}/plugins/formats
 %dir %{_libdir}/%{name}/plugins/sql
 %attr(755,root,root) %{_libdir}/%{name}/plugins/formats/*.so
-# needed for normal operational
-%{_libdir}/%{name}/plugins/formats/*.la
-%{_libdir}/lib*.la
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/classic
 
 %if %{with postgresql}
-%files db-pgsql
+%files pgsql
 %defattr(644,root,root,755)
-%dir %{_libdir}/%{name}/plugins/sql/*pgsql*
+%{_libdir}/%{name}/plugins/sql/*pgsql*
+%exclude %{_libdir}/%{name}/plugins/sql/*pgsql*.a
 %{_datadir}/%{name}/classic/*pgsql*
 %endif
 
 %if %{with mysql}
-%files db-mysql
+%files mysql
 %defattr(644,root,root,755)
-%dir %{_libdir}/%{name}/plugins/sql/*mysql*
+%{_libdir}/%{name}/plugins/sql/*mysql*
+%exclude %{_libdir}/%{name}/plugins/sql/*mysql*.a
 %{_datadir}/%{name}/classic/*mysql*
+%exclude %{_datadir}/%{name}/classic/mysql2pgsql.sh
+%exclude %{_datadir}/%{name}/classic/mysql2sqlite.sh
 %endif
 
 %if %{with sqlite3}
-%files db-sqlite3
+%files sqlite3
 %defattr(644,root,root,755)
-%dir %{_libdir}/%{name}/plugins/sql/*sqlite*
+%{_libdir}/%{name}/plugins/sql/*sqlite*
+%exclude %{_libdir}/%{name}/plugins/sql/*sqlite*.a
 %{_datadir}/%{name}/classic/*sqlite*
 %endif
 
@@ -272,5 +268,5 @@ fi
 %files -n python-libpreludedb
 %defattr(644,root,root,755)
 %attr(755,root,root) %{py_sitedir}/*.so
- %{py_sitedir}/*.py[co]
+%{py_sitedir}/*.py[co]
 %endif
