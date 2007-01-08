@@ -9,12 +9,12 @@
 Summary:	The PreludeDB Library
 Summary(pl):	Biblioteka PreludeDB
 Name:		libpreludedb
-Version:	0.9.11
-Release:	2
+Version:	0.9.11.2
+Release:	1
 License:	GPL
 Group:		Libraries
 Source0:	http://www.prelude-ids.org/download/releases/%{name}-%{version}.tar.gz
-# Source0-md5:	f0b2a1229784419be1f9602f3f06d539
+# Source0-md5:	36c4a676f8b5e30c0b7cbe9a26535ba0
 URL:		http://www.prelude-ids.org/
 BuildRequires:	bison
 BuildRequires:	flex
@@ -148,11 +148,11 @@ Dowi±zania Pythona do libpreludedb.
 %configure \
 	--enable-shared \
 	--enable-static \
-	--%{!?with_perl:dis}%{?with_perl:en}able-perl \
-	--%{!?with_python:dis}%{?with_python:en}able-python \
-	--%{!?with_postgresql:dis}%{?with_postgresql:en}able-pgsql \
-	--%{!?with_mysql:dis}%{?with_mysql:en}able-mysql \
-	--%{!?with_sqlite3:dis}%{?with_sqlite3:en}able-sqlite3 \
+	--with%{!?with_perl:out}-perl \
+	--with%{!?with_python:out}-python \
+	--with%{!?with_postgresql:out}-pgsql \
+	--with%{!?with_mysql:out}-mysql \
+	--with%{!?with_sqlite3:out}-sqlite3 \
 	--enable-gtk-doc \
 	--with-html-dir=%{_gtkdocdir}/libpreludedb \
 
@@ -211,7 +211,9 @@ fi
 %dir %{_libdir}/%{name}
 %dir %{_libdir}/%{name}/plugins
 %dir %{_libdir}/%{name}/plugins/formats
+%if %{with postgresql} || %{with mysql} || %{with sqlite3}
 %dir %{_libdir}/%{name}/plugins/sql
+%endif
 %attr(755,root,root) %{_libdir}/%{name}/plugins/formats/*.so
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/classic
