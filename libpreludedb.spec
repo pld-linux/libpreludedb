@@ -1,10 +1,11 @@
 #
+# Conditional build:
 %bcond_without	perl
 %bcond_without	python		# needed by prewikka
 %bcond_without	postgresql	# 
 %bcond_without	mysql		# one from those is needed by prewikka
 %bcond_without	sqlite3		# 
-
+#
 %include	/usr/lib/rpm/macros.perl
 Summary:	The PreludeDB Library
 Summary(pl):	Biblioteka PreludeDB
