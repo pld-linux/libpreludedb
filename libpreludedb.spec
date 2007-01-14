@@ -1,10 +1,10 @@
 #
 # Conditional build:
-%bcond_without	perl
-%bcond_without	python		# needed by prewikka
-%bcond_without	postgresql	# 
-%bcond_without	mysql		# one from those is needed by prewikka
-%bcond_without	sqlite3		# 
+%bcond_without	perl		# don't build perl bindings
+%bcond_without	python		# don't build python bindings (needed by prewikka)
+%bcond_without	postgresql	# don't build postgresql plugin
+%bcond_without	mysql		# don't build mysql plugin
+%bcond_without	sqlite3		# don't build sqlite3 plugin
 #
 %include	/usr/lib/rpm/macros.perl
 Summary:	The PreludeDB Library
@@ -165,8 +165,8 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-# are generating wrong dependencies (and are not needed anyway)
-find $RPM_BUILD_ROOT -iregex .*.la -exec rm {} \;
+# *.la are generating wrong dependencies (and are not needed anyway)
+rm -f $RPM_BUILD_ROOT%{_libdir}/%{name}/plugins/*/*.{la,a}
 
 %if %{with perl}
 cd bindings/perl && %{__perl} Makefile.PL \
@@ -196,10 +196,8 @@ for reference visit %{url}
 EOF
 fi
 
-%postun
-
-%post libs -p /sbin/ldconfig
-%postun libs -p /sbin/ldconfig
+%post	libs -p /sbin/ldconfig
+%postun	libs -p /sbin/ldconfig
 
 %files
 %defattr(644,root,root,755)
@@ -219,19 +217,30 @@ fi
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/classic
 
+%files devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/libpreludedb-config
+%attr(755,root,root) %{_libdir}/lib*.so
+%{_libdir}/lib*.la
+%{_includedir}/libpreludedb
+%{_aclocaldir}/*.m4
+%{_gtkdocdir}/libpreludedb
+
+%files static
+%defattr(644,root,root,755)
+%{_libdir}/lib*.a
+
 %if %{with postgresql}
 %files pgsql
 %defattr(644,root,root,755)
-%{_libdir}/%{name}/plugins/sql/*pgsql*
-%exclude %{_libdir}/%{name}/plugins/sql/*pgsql*.a
+%attr(755,root,root) %{_libdir}/%{name}/plugins/sql/*pgsql*.so
 %{_datadir}/%{name}/classic/*pgsql*
 %endif
 
 %if %{with mysql}
 %files mysql
 %defattr(644,root,root,755)
-%{_libdir}/%{name}/plugins/sql/*mysql*
-%exclude %{_libdir}/%{name}/plugins/sql/*mysql*.a
+%attr(755,root,root) %{_libdir}/%{name}/plugins/sql/*mysql*.so
 %{_datadir}/%{name}/classic/*mysql*
 %exclude %{_datadir}/%{name}/classic/mysql2pgsql.sh
 %exclude %{_datadir}/%{name}/classic/mysql2sqlite.sh
@@ -240,23 +249,9 @@ fi
 %if %{with sqlite3}
 %files sqlite3
 %defattr(644,root,root,755)
-%{_libdir}/%{name}/plugins/sql/*sqlite*
-%exclude %{_libdir}/%{name}/plugins/sql/*sqlite*.a
+%attr(755,root,root) %{_libdir}/%{name}/plugins/sql/*sqlite*.so
 %{_datadir}/%{name}/classic/*sqlite*
 %endif
-
-%files devel
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/libpreludedb-config
-%attr(755,root,root) %{_libdir}/lib*.so
-%{_includedir}/libpreludedb
-%{_aclocaldir}/*.m4
-%{_gtkdocdir}/libpreludedb
-
-%files static
-%defattr(644,root,root,755)
-%{_libdir}/lib*.a
-%{_libdir}/%{name}/plugins/*/*.a
 
 %if %{with perl}
 %files -n perl-libpreludedb
