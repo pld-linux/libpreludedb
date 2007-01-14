@@ -28,8 +28,8 @@ BuildRequires:	libprelude-devel >= 0.9.9
 BuildRequires:	gtk-doc >= 1.0
 BuildRequires:	pkgconfig
 BuildRequires:	rpm-perlprov
+Requires(post):	/sbin/ldconfig
 Requires:	%{name}(DB_driver) = %{version}-%{release}
-Requires:	%{name}-libs = %{version}-%{release}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -100,7 +100,7 @@ Interfejs do SQLite3 do libpreludedb
 Summary:	Header files and development documentation for libpreludedb
 Summary(pl):	Pliki nag³ówkowe i dokumentacja programistyczna do libpreludedb
 Group:		Development/Libraries
-Requires:	%{name}-libs = %{version}-%{release}
+Requires:	%{name} = %{version}-%{release}
 
 %description devel
 Header files and development documentation for libpreludedb.
@@ -124,6 +124,7 @@ Statyczna biblioteka libpreludedb.
 Summary:	libpreludedb Perl bindings
 Summary(pl):	Dowi±zania Perla do libpreludedb
 Group:		Development/Languages/Perl
+Requires:	%{name} = %{version}-%{release}
 
 %description -n perl-libpreludedb
 libpreludedb Perl bindings.
@@ -135,6 +136,7 @@ Dowi±zania Perla do libpreludedb.
 Summary:	libpreludedb Python bindings
 Summary(pl):	Dowi±zania Pythona do libpreludedb
 Group:		Development/Languages/Python
+Requires:	%{name} = %{version}-%{release}
 
 %description -n python-libpreludedb
 libpreludedb Python bindings.
@@ -185,6 +187,7 @@ cd ../..
 rm -rf $RPM_BUILD_ROOT
 
 %post
+/sbin/ldconfig
 if [ "$1" = 1 ]; then
 %banner -e %{name} <<EOF
 
@@ -196,15 +199,11 @@ for reference visit %{url}
 EOF
 fi
 
-%post	libs -p /sbin/ldconfig
-%postun	libs -p /sbin/ldconfig
+%postun	-p /sbin/ldconfig
 
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README
-
-%files libs
-%defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/preludedb-admin
 %attr(755,root,root) %{_libdir}/lib*.so.*.*
 %dir %{_libdir}/%{name}
