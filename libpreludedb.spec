@@ -10,12 +10,12 @@
 Summary:	The PreludeDB Library
 Summary(pl):	Biblioteka PreludeDB
 Name:		libpreludedb
-Version:	0.9.11.2
+Version:	0.9.11.3
 Release:	1
 License:	GPL
 Group:		Libraries
 Source0:	http://www.prelude-ids.org/download/releases/%{name}-%{version}.tar.gz
-# Source0-md5:	36c4a676f8b5e30c0b7cbe9a26535ba0
+# Source0-md5:	cbc10dda9f968a191af70e01d9fca65e
 URL:		http://www.prelude-ids.org/
 BuildRequires:	bison
 BuildRequires:	flex
