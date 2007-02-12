@@ -8,7 +8,7 @@
 #
 %include	/usr/lib/rpm/macros.perl
 Summary:	The PreludeDB Library
-Summary(pl):	Biblioteka PreludeDB
+Summary(pl.UTF-8):   Biblioteka PreludeDB
 Name:		libpreludedb
 Version:	0.9.11.3
 Release:	1
@@ -39,27 +39,27 @@ developers to use the Prelude IDMEF database easily and efficiently
 without worrying about SQL, and to access the database independently
 of the type/format of the database.
 
-%description -l pl
-Biblioteka PreludeDB dostarcza warstwê abstrakcji ponad rodzajem i
-formatem bazy danych u¿ywanej do przechowywania alarmów IDMEF.
-Pozwala programistom ³atwo i wydajnie u¿ywaæ bazy danych IDMEF Prelude
-nie martwi±c siê o SQL i dostawaæ siê do bazy niezale¿nie od jej
+%description -l pl.UTF-8
+Biblioteka PreludeDB dostarcza warstwÄ™ abstrakcji ponad rodzajem i
+formatem bazy danych uÅ¼ywanej do przechowywania alarmÃ³w IDMEF.
+Pozwala programistom Å‚atwo i wydajnie uÅ¼ywaÄ‡ bazy danych IDMEF Prelude
+nie martwiÄ…c siÄ™ o SQL i dostawaÄ‡ siÄ™ do bazy niezaleÅ¼nie od jej
 rodzaju/formatu.
 
 %package libs
 Summary:	Libpreludedb library
-Summary(pl):	Biblioteka libpreludedb
+Summary(pl.UTF-8):   Biblioteka libpreludedb
 Group:		Libraries
 
 %description libs
 Libpreludedb library
 
-%description libs -l pl
+%description libs -l pl.UTF-8
 Biblioteka libpreludedb
 
 %package pgsql
 Summary:	PostgreSQL backend for libpreludedb
-Summary(pl):	Interfejs do PostgreSQL dla libpreludedb
+Summary(pl.UTF-8):   Interfejs do PostgreSQL dla libpreludedb
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 Provides:	%{name}(DB_driver) = %{version}-%{release}
@@ -67,12 +67,12 @@ Provides:	%{name}(DB_driver) = %{version}-%{release}
 %description pgsql
 PostgreSQL backend for libpreludedb
 
-%description pgsql -l pl
+%description pgsql -l pl.UTF-8
 Interfejs do PostgreSQL do libpreludedb
 
 %package mysql
 Summary:	MySQL backend for libpreludedb
-Summary(pl):	Interfejs do MySQL dla libpreludedb
+Summary(pl.UTF-8):   Interfejs do MySQL dla libpreludedb
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 Provides:	%{name}(DB_driver) = %{version}-%{release}
@@ -80,12 +80,12 @@ Provides:	%{name}(DB_driver) = %{version}-%{release}
 %description mysql
 MySQL backend for libpreludedb
 
-%description mysql -l pl
+%description mysql -l pl.UTF-8
 Interfejs do MySQL do libpreludedb
 
 %package sqlite3
 Summary:	SQLite3 backend for libpreludedb
-Summary(pl):	Interfejs do SQLite3 dla libpreludedb
+Summary(pl.UTF-8):   Interfejs do SQLite3 dla libpreludedb
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 Provides:	%{name}(DB_driver) = %{version}-%{release}
@@ -93,56 +93,56 @@ Provides:	%{name}(DB_driver) = %{version}-%{release}
 %description sqlite3
 SQLite3 backend for libpreludedb
 
-%description sqlite3 -l pl
+%description sqlite3 -l pl.UTF-8
 Interfejs do SQLite3 do libpreludedb
 
 %package devel
 Summary:	Header files and development documentation for libpreludedb
-Summary(pl):	Pliki nag³ówkowe i dokumentacja programistyczna do libpreludedb
+Summary(pl.UTF-8):   Pliki nagÅ‚Ã³wkowe i dokumentacja programistyczna do libpreludedb
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description devel
 Header files and development documentation for libpreludedb.
 
-%description devel -l pl
-Pliki nag³ówkowe i dokumentacja programistyczna do libpreludedb.
+%description devel -l pl.UTF-8
+Pliki nagÅ‚Ã³wkowe i dokumentacja programistyczna do libpreludedb.
 
 %package static
 Summary:	Static libpreludedb library
-Summary(pl):	Statyczna biblioteka libpreludedb
+Summary(pl.UTF-8):   Statyczna biblioteka libpreludedb
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 Static libpreludedb library.
 
-%description static -l pl
+%description static -l pl.UTF-8
 Statyczna biblioteka libpreludedb.
 
 %package -n perl-libpreludedb
 Summary:	libpreludedb Perl bindings
-Summary(pl):	Dowi±zania Perla do libpreludedb
+Summary(pl.UTF-8):   DowiÄ…zania Perla do libpreludedb
 Group:		Development/Languages/Perl
 Requires:	%{name} = %{version}-%{release}
 
 %description -n perl-libpreludedb
 libpreludedb Perl bindings.
 
-%description -n perl-libpreludedb -l pl
-Dowi±zania Perla do libpreludedb.
+%description -n perl-libpreludedb -l pl.UTF-8
+DowiÄ…zania Perla do libpreludedb.
 
 %package -n python-libpreludedb
 Summary:	libpreludedb Python bindings
-Summary(pl):	Dowi±zania Pythona do libpreludedb
+Summary(pl.UTF-8):   DowiÄ…zania Pythona do libpreludedb
 Group:		Development/Languages/Python
 Requires:	%{name} = %{version}-%{release}
 
 %description -n python-libpreludedb
 libpreludedb Python bindings.
 
-%description -n python-libpreludedb -l pl
-Dowi±zania Pythona do libpreludedb.
+%description -n python-libpreludedb -l pl.UTF-8
+DowiÄ…zania Pythona do libpreludedb.
 
 %prep
 %setup -q
