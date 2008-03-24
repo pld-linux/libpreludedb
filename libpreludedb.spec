@@ -10,26 +10,29 @@
 Summary:	The PreludeDB Library
 Summary(pl.UTF-8):	Biblioteka PreludeDB
 Name:		libpreludedb
-Version:	0.9.11.3
+Version:	0.9.14.1
 Release:	1
-License:	GPL
+License:	GPL v2 or commercial
 Group:		Libraries
 Source0:	http://www.prelude-ids.org/download/releases/%{name}-%{version}.tar.gz
-# Source0-md5:	cbc10dda9f968a191af70e01d9fca65e
+# Source0-md5:	d5e37cccc32ca54fece68b7eee589f01
 URL:		http://www.prelude-ids.org/
 BuildRequires:	bison
 BuildRequires:	flex
-BuildRequires:	libprelude-devel >= 0.9.9
-%{?with_perl:BuildRequires:	perl-devel}
-%{?with_python:BuildRequires:	python-devel}
-%{?with_postgresql:BuildRequires:	postgresql-devel}
-%{?with_mysql:BuildRequires:	mysql-devel}
-%{?with_sqlite3:BuildRequires:	sqlite3-devel}
 BuildRequires:	gtk-doc >= 1.0
+BuildRequires:	libprelude-devel >= 0.9.9
+%{?with_mysql:BuildRequires:	mysql-devel}
+%{?with_perl:BuildRequires:	perl-devel}
 BuildRequires:	pkgconfig
+%{?with_postgresql:BuildRequires:	postgresql-devel}
+%{?with_python:BuildRequires:	python-devel >= 1:2.5}
 BuildRequires:	rpm-perlprov
+BuildRequires:	rpm-pythonprov
+BuildRequires:	rpmbuild(macros) >= 1.219
+%{?with_sqlite3:BuildRequires:	sqlite3-devel}
 Requires(post):	/sbin/ldconfig
 Requires:	%{name}(DB_driver) = %{version}-%{release}
+Requires:	libprelude >= 0.9.9
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -46,16 +49,30 @@ Pozwala programistom łatwo i wydajnie używać bazy danych IDMEF Prelude
 nie martwiąc się o SQL i dostawać się do bazy niezależnie od jej
 rodzaju/formatu.
 
-%package libs
-Summary:	Libpreludedb library
-Summary(pl.UTF-8):	Biblioteka libpreludedb
-Group:		Libraries
+%package devel
+Summary:	Header files and development documentation for libpreludedb
+Summary(pl.UTF-8):	Pliki nagłówkowe i dokumentacja programistyczna do libpreludedb
+Group:		Development/Libraries
+Requires:	%{name} = %{version}-%{release}
+Requires:	libprelude-devel >= 0.9.9
 
-%description libs
-Libpreludedb library
+%description devel
+Header files and development documentation for libpreludedb.
 
-%description libs -l pl.UTF-8
-Biblioteka libpreludedb
+%description devel -l pl.UTF-8
+Pliki nagłówkowe i dokumentacja programistyczna do libpreludedb.
+
+%package static
+Summary:	Static libpreludedb library
+Summary(pl.UTF-8):	Statyczna biblioteka libpreludedb
+Group:		Development/Libraries
+Requires:	%{name}-devel = %{version}-%{release}
+
+%description static
+Static libpreludedb library.
+
+%description static -l pl.UTF-8
+Statyczna biblioteka libpreludedb.
 
 %package pgsql
 Summary:	PostgreSQL backend for libpreludedb
@@ -96,30 +113,6 @@ SQLite3 backend for libpreludedb
 %description sqlite3 -l pl.UTF-8
 Interfejs do SQLite3 do libpreludedb
 
-%package devel
-Summary:	Header files and development documentation for libpreludedb
-Summary(pl.UTF-8):	Pliki nagłówkowe i dokumentacja programistyczna do libpreludedb
-Group:		Development/Libraries
-Requires:	%{name} = %{version}-%{release}
-
-%description devel
-Header files and development documentation for libpreludedb.
-
-%description devel -l pl.UTF-8
-Pliki nagłówkowe i dokumentacja programistyczna do libpreludedb.
-
-%package static
-Summary:	Static libpreludedb library
-Summary(pl.UTF-8):	Statyczna biblioteka libpreludedb
-Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}-%{release}
-
-%description static
-Static libpreludedb library.
-
-%description static -l pl.UTF-8
-Statyczna biblioteka libpreludedb.
-
 %package -n perl-libpreludedb
 Summary:	libpreludedb Perl bindings
 Summary(pl.UTF-8):	Dowiązania Perla do libpreludedb
@@ -149,15 +142,15 @@ Dowiązania Pythona do libpreludedb.
 
 %build
 %configure \
-	--enable-shared \
+	--enable-gtk-doc \
 	--enable-static \
 	--with%{!?with_perl:out}-perl \
 	--with%{!?with_python:out}-python \
 	--with%{!?with_postgresql:out}-pgsql \
 	--with%{!?with_mysql:out}-mysql \
 	--with%{!?with_sqlite3:out}-sqlite3 \
-	--enable-gtk-doc \
 	--with-html-dir=%{_gtkdocdir}/libpreludedb \
+	--with-perl-installdirs=vendor
 
 %{__make}
 
@@ -170,17 +163,10 @@ rm -rf $RPM_BUILD_ROOT
 # *.la are generating wrong dependencies (and are not needed anyway)
 rm -f $RPM_BUILD_ROOT%{_libdir}/%{name}/plugins/*/*.{la,a}
 
-%if %{with perl}
-cd bindings/perl && %{__perl} Makefile.PL \
-        INSTALLDIRS=vendor
-cd ../..
-%{__make} -C bindings/perl install \
-	DESTDIR=$RPM_BUILD_ROOT
-%endif
-
 %if %{with python}
 %py_ocomp $RPM_BUILD_ROOT%{py_sitedir}
 %py_comp $RPM_BUILD_ROOT%{py_sitedir}
+%py_postclean
 %endif
 
 %clean
@@ -203,67 +189,70 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS ChangeLog NEWS README
+%doc ChangeLog LICENSE.README NEWS README
 %attr(755,root,root) %{_bindir}/preludedb-admin
-%attr(755,root,root) %{_libdir}/lib*.so.*.*
+%attr(755,root,root) %{_libdir}/libpreludedb.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libpreludedb.so.0
 %dir %{_libdir}/%{name}
 %dir %{_libdir}/%{name}/plugins
 %dir %{_libdir}/%{name}/plugins/formats
+%attr(755,root,root) %{_libdir}/%{name}/plugins/formats/classic.so
 %if %{with postgresql} || %{with mysql} || %{with sqlite3}
 %dir %{_libdir}/%{name}/plugins/sql
 %endif
-%attr(755,root,root) %{_libdir}/%{name}/plugins/formats/*.so
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/classic
+%{_mandir}/man1/preludedb-admin.1*
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/libpreludedb-config
-%attr(755,root,root) %{_libdir}/lib*.so
-%{_libdir}/lib*.la
+%attr(755,root,root) %{_libdir}/libpreludedb.so
+%{_libdir}/libpreludedb.la
 %{_includedir}/libpreludedb
-%{_aclocaldir}/*.m4
+%{_aclocaldir}/libpreludedb.m4
 %{_gtkdocdir}/libpreludedb
 
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/lib*.a
+%{_libdir}/libpreludedb.a
 
 %if %{with postgresql}
 %files pgsql
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/%{name}/plugins/sql/*pgsql*.so
-%{_datadir}/%{name}/classic/*pgsql*
+%attr(755,root,root) %{_libdir}/%{name}/plugins/sql/pgsql.so
+%attr(755,root,root) %{_datadir}/%{name}/classic/mysql2pgsql.sh
+%{_datadir}/%{name}/classic/pgsql*.sql
 %endif
 
 %if %{with mysql}
 %files mysql
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/%{name}/plugins/sql/*mysql*.so
-%{_datadir}/%{name}/classic/*mysql*
-%exclude %{_datadir}/%{name}/classic/mysql2pgsql.sh
-%exclude %{_datadir}/%{name}/classic/mysql2sqlite.sh
+%attr(755,root,root) %{_libdir}/%{name}/plugins/sql/mysql.so
+%{_datadir}/%{name}/classic/mysql*.sql
 %endif
 
 %if %{with sqlite3}
 %files sqlite3
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/%{name}/plugins/sql/*sqlite*.so
-%{_datadir}/%{name}/classic/*sqlite*
+%attr(755,root,root) %{_libdir}/%{name}/plugins/sql/sqlite3.so
+%attr(755,root,root) %{_datadir}/%{name}/classic/mysql2sqlite.sh
+%{_datadir}/%{name}/classic/sqlite*.sql
 %endif
 
 %if %{with perl}
 %files -n perl-libpreludedb
 %defattr(644,root,root,755)
-%dir %{perl_vendorarch}/auto/PreludeDB
-%attr(755,root,root) %{perl_vendorarch}/auto/PreludeDB/*.so
-%{perl_vendorarch}/auto/PreludeDB/*.bs
 %{perl_vendorarch}/PreludeDB.pm
+%dir %{perl_vendorarch}/auto/PreludeDB
+%attr(755,root,root) %{perl_vendorarch}/auto/PreludeDB/PreludeDB.so
+%{perl_vendorarch}/auto/PreludeDB/PreludeDB.bs
 %endif
 
 %if %{with python}
 %files -n python-libpreludedb
 %defattr(644,root,root,755)
-%attr(755,root,root) %{py_sitedir}/*.so
-%{py_sitedir}/*.py[co]
+%attr(755,root,root) %{py_sitedir}/_preludedb.so
+%{py_sitedir}/preludedb.py[co]
+%{py_sitedir}/preludedb-*.egg-info
 %endif
