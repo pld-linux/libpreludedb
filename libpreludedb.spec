@@ -32,7 +32,7 @@ BuildRequires:	rpmbuild(macros) >= 1.219
 %{?with_sqlite3:BuildRequires:	sqlite3-devel}
 Requires(post):	/sbin/ldconfig
 Requires:	%{name}(DB_driver) = %{version}-%{release}
-Requires:	libprelude >= 0.9.9
+Requires:	libprelude-libs >= 0.9.9
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
