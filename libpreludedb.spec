@@ -14,9 +14,10 @@ Version:	0.9.14.1
 Release:	1
 License:	GPL v2 or commercial
 Group:		Libraries
-Source0:	http://www.prelude-ids.org/download/releases/%{name}-%{version}.tar.gz
+#Source0Download: http://www.prelude-ids.com/developpement/telechargement/index.html
+Source0:	http://www.prelude-ids.com/download/releases/libpreludedb/%{name}-%{version}.tar.gz
 # Source0-md5:	d5e37cccc32ca54fece68b7eee589f01
-URL:		http://www.prelude-ids.org/
+URL:		http://www.prelude-ids.com/
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	gtk-doc >= 1.0
