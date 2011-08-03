@@ -19,6 +19,7 @@ Group:		Libraries
 #Source0Download: http://www.prelude-ids.com/developpement/telechargement/index.html
 Source0:	http://www.prelude-ids.com/download/releases/libpreludedb/%{name}-%{version}.tar.gz
 # Source0-md5:	e2b38dfe2efb2008fcb5e2ce51f6638b
+Patch0:		%{name}-mysql-innodb.patch
 URL:		http://www.prelude-ids.com/
 BuildRequires:	bison
 BuildRequires:	flex
@@ -142,6 +143,7 @@ Dowiązania Pythona do libpreludedb.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %configure \
