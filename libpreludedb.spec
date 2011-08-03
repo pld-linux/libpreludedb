@@ -1,3 +1,5 @@
+# TODO:
+# build with --enable-static instead of --disable-static
 #
 # Conditional build:
 %bcond_without	perl		# don't build perl bindings
@@ -10,18 +12,18 @@
 Summary:	The PreludeDB Library
 Summary(pl.UTF-8):	Biblioteka PreludeDB
 Name:		libpreludedb
-Version:	0.9.14.1
+Version:	1.0.0
 Release:	1
 License:	GPL v2 or commercial
 Group:		Libraries
 #Source0Download: http://www.prelude-ids.com/developpement/telechargement/index.html
 Source0:	http://www.prelude-ids.com/download/releases/libpreludedb/%{name}-%{version}.tar.gz
-# Source0-md5:	d5e37cccc32ca54fece68b7eee589f01
+# Source0-md5:	e2b38dfe2efb2008fcb5e2ce51f6638b
 URL:		http://www.prelude-ids.com/
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	gtk-doc >= 1.0
-BuildRequires:	libprelude-devel >= 0.9.9
+BuildRequires:	libprelude-devel >= %{version}
 %{?with_mysql:BuildRequires:	mysql-devel}
 %{?with_perl:BuildRequires:	perl-devel}
 BuildRequires:	pkgconfig
@@ -33,7 +35,7 @@ BuildRequires:	rpmbuild(macros) >= 1.219
 %{?with_sqlite3:BuildRequires:	sqlite3-devel}
 Requires(post):	/sbin/ldconfig
 Requires:	%{name}(DB_driver) = %{version}-%{release}
-Requires:	libprelude-libs >= 0.9.9
+Requires:	libprelude-libs >= %{version}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -45,9 +47,9 @@ of the type/format of the database.
 
 %description -l pl.UTF-8
 Biblioteka PreludeDB dostarcza warstwę abstrakcji ponad rodzajem i
-formatem bazy danych używanej do przechowywania alarmów IDMEF.
-Pozwala programistom łatwo i wydajnie używać bazy danych IDMEF Prelude
-nie martwiąc się o SQL i dostawać się do bazy niezależnie od jej
+formatem bazy danych używanej do przechowywania alarmów IDMEF. Pozwala
+programistom łatwo i wydajnie używać bazy danych IDMEF Prelude nie
+martwiąc się o SQL i dostawać się do bazy niezależnie od jej
 rodzaju/formatu.
 
 %package devel
@@ -63,17 +65,17 @@ Header files and development documentation for libpreludedb.
 %description devel -l pl.UTF-8
 Pliki nagłówkowe i dokumentacja programistyczna do libpreludedb.
 
-%package static
-Summary:	Static libpreludedb library
-Summary(pl.UTF-8):	Statyczna biblioteka libpreludedb
-Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}-%{release}
+#%package static
+#Summary:	Static libpreludedb library
+#Summary(pl.UTF-8):	Statyczna biblioteka libpreludedb
+#Group:		Development/Libraries
+#Requires:	%{name}-devel = %{version}-%{release}
 
-%description static
-Static libpreludedb library.
+#%description static
+#Static libpreludedb library.
 
-%description static -l pl.UTF-8
-Statyczna biblioteka libpreludedb.
+#%description static -l pl.UTF-8
+#Statyczna biblioteka libpreludedb.
 
 %package pgsql
 Summary:	PostgreSQL backend for libpreludedb
@@ -144,10 +146,10 @@ Dowiązania Pythona do libpreludedb.
 %build
 %configure \
 	--enable-gtk-doc \
-	--enable-static \
+	--disable-static \
 	--with%{!?with_perl:out}-perl \
 	--with%{!?with_python:out}-python \
-	--with%{!?with_postgresql:out}-pgsql \
+	--with%{!?with_postgresql:out}-postgresql \
 	--with%{!?with_mysql:out}-mysql \
 	--with%{!?with_sqlite3:out}-sqlite3 \
 	--with-html-dir=%{_gtkdocdir}/libpreludedb \
@@ -214,9 +216,9 @@ fi
 %{_aclocaldir}/libpreludedb.m4
 %{_gtkdocdir}/libpreludedb
 
-%files static
-%defattr(644,root,root,755)
-%{_libdir}/libpreludedb.a
+#%files static
+#%defattr(644,root,root,755)
+#%{_libdir}/libpreludedb.a
 
 %if %{with postgresql}
 %files pgsql
