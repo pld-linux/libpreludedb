@@ -1,5 +1,3 @@
-# TODO:
-# build with --enable-static instead of --disable-static
 #
 # Conditional build:
 %bcond_without	perl		# don't build perl bindings
@@ -20,11 +18,15 @@ Group:		Libraries
 Source0:	http://www.prelude-ids.com/download/releases/libpreludedb/%{name}-%{version}.tar.gz
 # Source0-md5:	e2b38dfe2efb2008fcb5e2ce51f6638b
 Patch0:		%{name}-mysql-innodb.patch
+Patch1:		%{name}-lt.patch
 URL:		http://www.prelude-ids.com/
+BuildRequires:	autoconf >= 2.59
+BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	gtk-doc >= 1.0
 BuildRequires:	libprelude-devel >= %{version}
+BuildRequires:	libtool
 %{?with_mysql:BuildRequires:	mysql-devel}
 %{?with_perl:BuildRequires:	perl-devel}
 BuildRequires:	pkgconfig
@@ -33,7 +35,7 @@ BuildRequires:	pkgconfig
 BuildRequires:	rpm-perlprov
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.219
-%{?with_sqlite3:BuildRequires:	sqlite3-devel}
+%{?with_sqlite3:BuildRequires:	sqlite3-devel >= 3.0.0}
 Requires(post):	/sbin/ldconfig
 Requires:	%{name}(DB_driver) = %{version}-%{release}
 Requires:	libprelude-libs >= %{version}
@@ -58,7 +60,7 @@ Summary:	Header files and development documentation for libpreludedb
 Summary(pl.UTF-8):	Pliki nagłówkowe i dokumentacja programistyczna do libpreludedb
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	libprelude-devel >= 0.9.9
+Requires:	libprelude-devel >= %{version}
 
 %description devel
 Header files and development documentation for libpreludedb.
@@ -66,17 +68,17 @@ Header files and development documentation for libpreludedb.
 %description devel -l pl.UTF-8
 Pliki nagłówkowe i dokumentacja programistyczna do libpreludedb.
 
-#%package static
-#Summary:	Static libpreludedb library
-#Summary(pl.UTF-8):	Statyczna biblioteka libpreludedb
-#Group:		Development/Libraries
-#Requires:	%{name}-devel = %{version}-%{release}
+%package static
+Summary:	Static libpreludedb library
+Summary(pl.UTF-8):	Statyczna biblioteka libpreludedb
+Group:		Development/Libraries
+Requires:	%{name}-devel = %{version}-%{release}
 
-#%description static
-#Static libpreludedb library.
+%description static
+Static libpreludedb library.
 
-#%description static -l pl.UTF-8
-#Statyczna biblioteka libpreludedb.
+%description static -l pl.UTF-8
+Statyczna biblioteka libpreludedb.
 
 %package pgsql
 Summary:	PostgreSQL backend for libpreludedb
@@ -144,11 +146,17 @@ Dowiązania Pythona do libpreludedb.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
+%{__libtoolize}
+%{__aclocal} -I m4 -I libmissing/m4
+%{__autoconf}
+%{__autoheader}
+%{__automake}
 %configure \
 	--enable-gtk-doc \
-	--disable-static \
+	--enable-static \
 	--with%{!?with_perl:out}-perl \
 	--with%{!?with_python:out}-python \
 	--with%{!?with_postgresql:out}-postgresql \
@@ -165,8 +173,12 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-# *.la are generating wrong dependencies (and are not needed anyway)
-rm -f $RPM_BUILD_ROOT%{_libdir}/%{name}/plugins/*/*.{la,a}
+%if %{without postgresql} && %{without mysql} && %{without sqlite3}
+install -d $RPM_BUILD_ROOT%{_libdir}/%{name}/plugins/sql
+%endif
+
+# no *.la for plugins
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}/plugins/*/*.{la,a}
 
 %if %{with python}
 %py_ocomp $RPM_BUILD_ROOT%{py_sitedir}
@@ -202,9 +214,7 @@ fi
 %dir %{_libdir}/%{name}/plugins
 %dir %{_libdir}/%{name}/plugins/formats
 %attr(755,root,root) %{_libdir}/%{name}/plugins/formats/classic.so
-%if %{with postgresql} || %{with mysql} || %{with sqlite3}
 %dir %{_libdir}/%{name}/plugins/sql
-%endif
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/classic
 %{_mandir}/man1/preludedb-admin.1*
@@ -218,9 +228,9 @@ fi
 %{_aclocaldir}/libpreludedb.m4
 %{_gtkdocdir}/libpreludedb
 
-#%files static
-#%defattr(644,root,root,755)
-#%{_libdir}/libpreludedb.a
+%files static
+%defattr(644,root,root,755)
+%{_libdir}/libpreludedb.a
 
 %if %{with postgresql}
 %files pgsql
@@ -259,5 +269,5 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{py_sitedir}/_preludedb.so
 %{py_sitedir}/preludedb.py[co]
-%{py_sitedir}/preludedb-*.egg-info
+%{py_sitedir}/preludedb-*-py*.egg-info
 %endif
