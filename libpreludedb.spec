@@ -1,44 +1,48 @@
 #
 # Conditional build:
-%bcond_without	perl		# don't build perl bindings
-%bcond_without	python		# don't build python bindings (needed by prewikka)
-%bcond_without	postgresql	# don't build postgresql plugin
-%bcond_without	mysql		# don't build mysql plugin
-%bcond_without	sqlite3		# don't build sqlite3 plugin
+%bcond_without	python2		# Python 2.x bindings (needed by prewikka)
+%bcond_without	python3		# Python 3.x bindings
+%bcond_without	static_libs	# static library
+%bcond_without	postgresql	# PostgreSQL plugin
+%bcond_without	mysql		# MySQL plugin
+%bcond_without	sqlite3		# SQLite3 plugin
 #
-%include	/usr/lib/rpm/macros.perl
 Summary:	The PreludeDB Library
 Summary(pl.UTF-8):	Biblioteka PreludeDB
 Name:		libpreludedb
-Version:	1.0.0
+Version:	1.2.6
 Release:	1
 License:	GPL v2 or commercial
 Group:		Libraries
-#Source0Download: http://www.prelude-ids.com/developpement/telechargement/index.html
-Source0:	http://www.prelude-ids.com/download/releases/libpreludedb/%{name}-%{version}.tar.gz
-# Source0-md5:	e2b38dfe2efb2008fcb5e2ce51f6638b
-Patch0:		%{name}-mysql-innodb.patch
-Patch1:		%{name}-lt.patch
-URL:		http://www.prelude-ids.com/
+#Source0Download: https://www.prelude-siem.org/projects/prelude/files
+Source0:	https://www.prelude-siem.org/attachments/download/408/%{name}-%{version}.tar.gz
+# Source0-md5:	d11ea3d545135b2b53d257d8917b82de
+Patch0:		%{name}-lt.patch
+Patch1:		%{name}-link.patch
+Patch2:		%{name}-python-install.patch
+URL:		https://www.prelude-siem.org/
 BuildRequires:	autoconf >= 2.59
-BuildRequires:	automake
+BuildRequires:	automake >= 1:1.9
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	gtk-doc >= 1.0
 BuildRequires:	libprelude-devel >= %{version}
-BuildRequires:	libtool
+BuildRequires:	libprelude-c++-devel >= %{version}
+BuildRequires:	libstdc++-devel
+BuildRequires:	libtool >= 2:1.5
 %{?with_mysql:BuildRequires:	mysql-devel}
-%{?with_perl:BuildRequires:	perl-devel}
 BuildRequires:	pkgconfig
 %{?with_postgresql:BuildRequires:	postgresql-devel}
-%{?with_python:BuildRequires:	python-devel >= 1:2.5}
-BuildRequires:	rpm-perlprov
+%{?with_python2:BuildRequires:	python-devel >= 1:2.5}
+%{?with_python3:BuildRequires:	python3-devel >= 1:3.2}
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.219
 %{?with_sqlite3:BuildRequires:	sqlite3-devel >= 3.0.0}
+BuildRequires:	swig-python
 Requires(post):	/sbin/ldconfig
 Requires:	%{name}(DB_driver) = %{version}-%{release}
 Requires:	libprelude-libs >= %{version}
+Obsoletes:	perl-libpreludedb
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -80,6 +84,46 @@ Static libpreludedb library.
 %description static -l pl.UTF-8
 Statyczna biblioteka libpreludedb.
 
+%package c++
+Summary:	C++ binding for libpreludedb
+Summary(pl.UTF-8):	Interfejs C++ do libpreludedb
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+Requires:	libprelude-c++ >= %{version}
+
+%description c++
+C++ binding for libpreludedb.
+
+%description c++ -l pl.UTF-8
+Interfejs C++ do libpreludedb.
+
+%package c++-devel
+Summary:	Header files for libpreludedbcpp
+Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki libpreludedbcpp
+Group:		Development/Libraries
+Requires:	%{name}-c++ = %{version}-%{release}
+Requires:	%{name}-devel = %{version}-%{release}
+Requires:	libprelude-c++-devel >= %{version}
+Requires:	libstdc++-devel
+
+%description c++-devel
+Header files for libpreludedbcpp.
+
+%description c++-devel -l pl.UTF-8
+Pliki nagłówkowe biblioteki libpreludedbcpp.
+
+%package c++-static
+Summary:	Static libpreludedbcpp library
+Summary(pl.UTF-8):	Statyczna biblioteka libpreludedbcpp
+Group:		Development/Libraries
+Requires:	%{name}-c++-devel = %{version}-%{release}
+
+%description c++-static
+Static libpreludedbcpp library.
+
+%description c++-static -l pl.UTF-8
+Statyczna biblioteka libpreludedbcpp.
+
 %package pgsql
 Summary:	PostgreSQL backend for libpreludedb
 Summary(pl.UTF-8):	Interfejs do PostgreSQL dla libpreludedb
@@ -119,34 +163,39 @@ SQLite3 backend for libpreludedb
 %description sqlite3 -l pl.UTF-8
 Interfejs do SQLite3 do libpreludedb
 
-%package -n perl-libpreludedb
-Summary:	libpreludedb Perl bindings
-Summary(pl.UTF-8):	Dowiązania Perla do libpreludedb
-Group:		Development/Languages/Perl
-Requires:	%{name} = %{version}-%{release}
-
-%description -n perl-libpreludedb
-libpreludedb Perl bindings.
-
-%description -n perl-libpreludedb -l pl.UTF-8
-Dowiązania Perla do libpreludedb.
-
 %package -n python-libpreludedb
-Summary:	libpreludedb Python bindings
-Summary(pl.UTF-8):	Dowiązania Pythona do libpreludedb
+Summary:	Python 2.x bindings for libpreludedb
+Summary(pl.UTF-8):	Wiązania Pythona 2.x do libpreludedb
 Group:		Development/Languages/Python
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}-c++ = %{version}-%{release}
 
 %description -n python-libpreludedb
-libpreludedb Python bindings.
+Python 2.x bindings for libpreludedb.
 
 %description -n python-libpreludedb -l pl.UTF-8
-Dowiązania Pythona do libpreludedb.
+Wiązania Pythona 2.x do libpreludedb.
+
+%package -n python3-libpreludedb
+Summary:	Python 3.x bindings for libpreludedb
+Summary(pl.UTF-8):	Wiązania Pythona 3.x do libpreludedb
+Group:		Development/Languages/Python
+Requires:	%{name}-c++ = %{version}-%{release}
+
+%description -n python3-libpreludedb
+Python 3.x bindings for libpreludedb.
+
+%description -n python3-libpreludedb -l pl.UTF-8
+Wiązania Pythona 3.x do libpreludedb.
 
 %prep
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
+
+%if %{with python3}
+%{__rm} bindings/python/{_preludedb.cxx,preludedb.py}
+%endif
 
 %build
 %{__libtoolize}
@@ -156,14 +205,14 @@ Dowiązania Pythona do libpreludedb.
 %{__automake}
 %configure \
 	--enable-gtk-doc \
-	--enable-static \
-	--with%{!?with_perl:out}-perl \
-	--with%{!?with_python:out}-python \
-	--with%{!?with_postgresql:out}-postgresql \
-	--with%{!?with_mysql:out}-mysql \
-	--with%{!?with_sqlite3:out}-sqlite3 \
+	%{?with_static_libs:--enable-static} \
 	--with-html-dir=%{_gtkdocdir}/libpreludedb \
-	--with-perl-installdirs=vendor
+	--with-mysql%{!?with_mysql:=no} \
+	--with-postgresql%{!?with_postgresql:=no} \
+	--with-python2%{!?with_python2:=no} \
+	--with-python3%{!?with_python3:=no} \
+	--with-sqlite%{!?with_sqlite3:=no} \
+	--with-swig
 
 %{__make}
 
@@ -171,18 +220,21 @@ Dowiązania Pythona do libpreludedb.
 rm -rf $RPM_BUILD_ROOT
 
 %{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT
+	DESTDIR=$RPM_BUILD_ROOT \
+	pythondir=%{py_sitescriptdir} \
+	pyexecdir=%{py_sitedir} \
+	python3dir=%{py3_sitescriptdir} \
+	py3execdir=%{py3_sitedir}
 
 %if %{without postgresql} && %{without mysql} && %{without sqlite3}
 install -d $RPM_BUILD_ROOT%{_libdir}/%{name}/plugins/sql
 %endif
 
 # no *.la for plugins
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}/plugins/*/*.{la,a}
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}/plugins/*/*.la \
+	%{?with_static_libs:$RPM_BUILD_ROOT%{_libdir}/%{name}/plugins/*/*.a}
 
-%if %{with python}
-%py_ocomp $RPM_BUILD_ROOT%{py_sitedir}
-%py_comp $RPM_BUILD_ROOT%{py_sitedir}
+%if %{with python2}
 %py_postclean
 %endif
 
@@ -204,12 +256,15 @@ fi
 
 %postun	-p /sbin/ldconfig
 
+%post	c++ -p /sbin/ldconfig
+%postun	c++ -p /sbin/ldconfig
+
 %files
 %defattr(644,root,root,755)
 %doc ChangeLog LICENSE.README NEWS README
 %attr(755,root,root) %{_bindir}/preludedb-admin
 %attr(755,root,root) %{_libdir}/libpreludedb.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libpreludedb.so.0
+%attr(755,root,root) %ghost %{_libdir}/libpreludedb.so.7
 %dir %{_libdir}/%{name}
 %dir %{_libdir}/%{name}/plugins
 %dir %{_libdir}/%{name}/plugins/formats
@@ -224,13 +279,33 @@ fi
 %attr(755,root,root) %{_bindir}/libpreludedb-config
 %attr(755,root,root) %{_libdir}/libpreludedb.so
 %{_libdir}/libpreludedb.la
-%{_includedir}/libpreludedb
+%dir %{_includedir}/libpreludedb
+%{_includedir}/libpreludedb/*.h
 %{_aclocaldir}/libpreludedb.m4
 %{_gtkdocdir}/libpreludedb
 
+%if %{with static_libs}
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libpreludedb.a
+%endif
+
+%files c++
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libpreludedbcpp.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libpreludedbcpp.so.2
+
+%files c++-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libpreludedbcpp.so
+%{_libdir}/libpreludedbcpp.la
+%{_includedir}/libpreludedb/*.hxx
+
+%if %{with static_libs}
+%files c++-static
+%defattr(644,root,root,755)
+%{_libdir}/libpreludedbcpp.a
+%endif
 
 %if %{with postgresql}
 %files pgsql
@@ -255,19 +330,19 @@ fi
 %{_datadir}/%{name}/classic/sqlite*.sql
 %endif
 
-%if %{with perl}
-%files -n perl-libpreludedb
-%defattr(644,root,root,755)
-%{perl_vendorarch}/PreludeDB.pm
-%dir %{perl_vendorarch}/auto/PreludeDB
-%attr(755,root,root) %{perl_vendorarch}/auto/PreludeDB/PreludeDB.so
-%{perl_vendorarch}/auto/PreludeDB/PreludeDB.bs
-%endif
-
-%if %{with python}
+%if %{with python2}
 %files -n python-libpreludedb
 %defattr(644,root,root,755)
 %attr(755,root,root) %{py_sitedir}/_preludedb.so
 %{py_sitedir}/preludedb.py[co]
 %{py_sitedir}/preludedb-*-py*.egg-info
+%endif
+
+%if %{with python3}
+%files -n python3-libpreludedb
+%defattr(644,root,root,755)
+%attr(755,root,root) %{py3_sitedir}/_preludedb.cpython-*.so
+%{py3_sitedir}/preludedb.py
+%{py3_sitedir}/__pycache__/preludedb.cpython-*.py[co]
+%{py3_sitedir}/preludedb-*-py*.egg-info
 %endif

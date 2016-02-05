@@ -1,9 +1,9 @@
---- libpreludedb-1.0.0/configure.in.orig	2010-03-10 13:45:13.000000000 +0100
-+++ libpreludedb-1.0.0/configure.in	2011-08-10 17:41:34.543209766 +0200
-@@ -75,10 +75,8 @@
+--- libpreludedb-1.2.6/configure.in.orig	2016-02-03 21:48:00.337869380 +0100
++++ libpreludedb-1.2.6/configure.in	2016-02-03 21:48:43.064534253 +0100
+@@ -102,10 +102,8 @@
          # headers.
          AC_MSG_RESULT(Darwin: adding -no-cpp-precomp)
-         AX_C_CHECK_FLAG(-no-cpp-precomp, , , PCFLAGS="$PCFLAGS -no-cpp-precomp")
+         AX_CHECK_COMPILE_FLAG(-no-cpp-precomp, PCFLAGS="$PCFLAGS -no-cpp-precomp")
 -        libext=dylib
          ;;
   *)

@@ -1,0 +1,24 @@
+--- libpreludedb-1.2.6/bindings/python/Makefile.am.orig	2015-08-03 19:25:50.697003748 +0200
++++ libpreludedb-1.2.6/bindings/python/Makefile.am	2016-02-05 19:10:27.281014380 +0100
+@@ -7,17 +7,17 @@
+ 
+ python-build: _preludedb.cxx
+ if HAVE_PYTHON2
+-	CC="$(CXX)" $(PYTHON2) setup.py build
++	CC="$(CXX)" $(PYTHON2) setup.py build --build-base=build-2
+ endif
+ if HAVE_PYTHON3
+-	CC="$(CXX)" $(PYTHON3) setup.py build
++	CC="$(CXX)" $(PYTHON3) setup.py build --build-base=build-3
+ endif
+ install-exec-hook:
+ if HAVE_PYTHON2
+-	$(PYTHON2) setup.py install `test -n "$(DESTDIR)" && echo --root $(DESTDIR)`
++	$(PYTHON2) setup.py build --build-base=build-2 install `test -n "$(DESTDIR)" && echo --root $(DESTDIR)` --skip-build --prefix=$(prefix) --install-purelib=$(pythondir) --install-platlib=$(pyexecdir) --optimize=2
+ endif
+ if HAVE_PYTHON3
+-	$(PYTHON3) setup.py install `test -n "$(DESTDIR)" && echo --root $(DESTDIR)`
++	$(PYTHON3) setup.py build --build-base=build-2 install `test -n "$(DESTDIR)" && echo --root $(DESTDIR)` --skip-build --prefix=$(prefix) --install-purelib=$(python3dir) --install-platlib=$(py3execdir) --optimize=2
+ endif
+ 
+ uninstall-hook:

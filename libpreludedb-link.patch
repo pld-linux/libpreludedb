@@ -1,0 +1,11 @@
+--- libpreludedb-1.2.6/bindings/c++/Makefile.am.orig	2015-08-03 19:25:50.695003748 +0200
++++ libpreludedb-1.2.6/bindings/c++/Makefile.am	2016-02-05 17:28:17.361271644 +0100
+@@ -7,7 +7,7 @@
+ libpreludedbcpp_la_SOURCES = preludedb.cxx preludedb-sql.cxx preludedb-error.cxx
+ 
+ libpreludedbcpp_la_LDFLAGS = -no-undefined -version-info @LIBPRELUDEDBCPP_SONAME@
+-libpreludedbcpp_la_LIBADD  = $(top_builddir)/src/.libs/libpreludedb.la
++libpreludedbcpp_la_LIBADD  = $(top_builddir)/src/libpreludedb.la -lpreludecpp
+ libpreludedbcpp_la_CPPFLAGS = -I$(top_builddir) -I$(top_builddir)/src/include -I$(top_srcdir)/src/include -I$(top_builddir)/bindings/c++/include -I$(top_srcdir)/bindings/c++/include @LIBPRELUDE_CFLAGS@
+ 
+ endif
