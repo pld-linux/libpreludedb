@@ -10,13 +10,13 @@
 Summary:	The PreludeDB Library
 Summary(pl.UTF-8):	Biblioteka PreludeDB
 Name:		libpreludedb
-Version:	1.2.6
+Version:	3.1.0
 Release:	1
 License:	GPL v2 or commercial
 Group:		Libraries
 #Source0Download: https://www.prelude-siem.org/projects/prelude/files
-Source0:	https://www.prelude-siem.org/attachments/download/408/%{name}-%{version}.tar.gz
-# Source0-md5:	d11ea3d545135b2b53d257d8917b82de
+Source0:	https://www.prelude-siem.org/attachments/download/722/%{name}-%{version}.tar.gz
+# Source0-md5:	d8a0b70a5be3ac101fba42bb5b18249f
 Patch0:		%{name}-lt.patch
 Patch1:		%{name}-link.patch
 Patch2:		%{name}-python-install.patch
@@ -219,7 +219,7 @@ Wiązania Pythona 3.x do libpreludedb.
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} install \
+%{__make} -j1 install \
 	DESTDIR=$RPM_BUILD_ROOT \
 	pythondir=%{py_sitescriptdir} \
 	pyexecdir=%{py_sitedir} \
@@ -283,6 +283,7 @@ fi
 %{_includedir}/libpreludedb/*.h
 %{_aclocaldir}/libpreludedb.m4
 %{_gtkdocdir}/libpreludedb
+%{_mandir}/man1/libpreludedb-config.1*
 
 %if %{with static_libs}
 %files static
