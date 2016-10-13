@@ -28,6 +28,7 @@ BuildRequires:	flex
 BuildRequires:	gtk-doc >= 1.0
 BuildRequires:	libprelude-devel >= %{version}
 BuildRequires:	libprelude-c++-devel >= %{version}
+BuildRequires:	libprelude-swig >= %{version}
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool >= 2:1.5
 %{?with_mysql:BuildRequires:	mysql-devel}
