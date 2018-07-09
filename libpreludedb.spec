@@ -10,13 +10,13 @@
 Summary:	The PreludeDB Library
 Summary(pl.UTF-8):	Biblioteka PreludeDB
 Name:		libpreludedb
-Version:	3.1.0
-Release:	4
+Version:	4.1.0
+Release:	1
 License:	GPL v2 or commercial
 Group:		Libraries
 #Source0Download: https://www.prelude-siem.org/projects/prelude/files
-Source0:	https://www.prelude-siem.org/attachments/download/722/%{name}-%{version}.tar.gz
-# Source0-md5:	d8a0b70a5be3ac101fba42bb5b18249f
+Source0:	https://www.prelude-siem.org/attachments/download/832/%{name}-%{version}.tar.gz
+# Source0-md5:	d17807635724abb1d98ef592ef5fc3cf
 Patch0:		%{name}-lt.patch
 Patch1:		%{name}-link.patch
 Patch2:		%{name}-python-install.patch
