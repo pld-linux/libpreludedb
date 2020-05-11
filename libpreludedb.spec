@@ -3,7 +3,7 @@
 %bcond_without	python2		# Python 2.x bindings (needed by prewikka)
 %bcond_without	python3		# Python 3.x bindings
 %bcond_without	static_libs	# static library
-%bcond_without	postgresql	# PostgreSQL plugin
+%bcond_without	pgsql		# PostgreSQL plugin
 %bcond_without	mysql		# MySQL plugin
 %bcond_without	sqlite3		# SQLite3 plugin
 #
@@ -34,7 +34,7 @@ BuildRequires:	libstdc++-devel
 BuildRequires:	libtool >= 2:1.5
 %{?with_mysql:BuildRequires:	mysql-devel}
 BuildRequires:	pkgconfig
-%{?with_postgresql:BuildRequires:	postgresql-devel}
+%{?with_pgsql:BuildRequires:	postgresql-devel}
 %{?with_python2:BuildRequires:	python-devel >= 1:2.5}
 %{?with_python3:BuildRequires:	python3-devel >= 1:3.2}
 BuildRequires:	rpm-pythonprov
@@ -212,7 +212,7 @@ Wiązania Pythona 3.x do libpreludedb.
 	%{?with_static_libs:--enable-static} \
 	--with-html-dir=%{_gtkdocdir}/libpreludedb \
 	--with-mysql%{!?with_mysql:=no} \
-	--with-postgresql%{!?with_postgresql:=no} \
+	--with-postgresql%{!?with_pgsql:=no} \
 	--with-python2%{!?with_python2:=no} \
 	--with-python3%{!?with_python3:=no} \
 	--with-sqlite%{!?with_sqlite3:=no} \
@@ -230,7 +230,7 @@ rm -rf $RPM_BUILD_ROOT
 	python3dir=%{py3_sitescriptdir} \
 	py3execdir=%{py3_sitedir}
 
-%if %{without postgresql} && %{without mysql} && %{without sqlite3}
+%if %{without pgsql} && %{without mysql} && %{without sqlite3}
 install -d $RPM_BUILD_ROOT%{_libdir}/%{name}/plugins/sql
 %endif
 
@@ -312,7 +312,7 @@ fi
 %{_libdir}/libpreludedbcpp.a
 %endif
 
-%if %{with postgresql}
+%if %{with pgsql}
 %files pgsql
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/%{name}/plugins/sql/pgsql.so
