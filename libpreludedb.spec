@@ -200,6 +200,9 @@ Wiązania Pythona 3.x do libpreludedb.
 %{__rm} bindings/python/{_preludedb.cxx,preludedb.py}
 %endif
 
+%{__sed} -i -e '1s,/usr/bin/env python,%{?with_python3:%{__python3}}%{!?with_python3:%{__python}},' \
+	preludedb-admin
+
 %build
 %{__gtkdocize}
 %{__libtoolize}
