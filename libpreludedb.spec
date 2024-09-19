@@ -10,13 +10,13 @@
 Summary:	The PreludeDB Library
 Summary(pl.UTF-8):	Biblioteka PreludeDB
 Name:		libpreludedb
-Version:	5.1.0
-Release:	6
+Version:	5.2.0
+Release:	1
 License:	GPL v2 or commercial
 Group:		Libraries
 #Source0Download: https://www.prelude-siem.org/projects/prelude/files
-Source0:	https://www.prelude-siem.org/attachments/download/1171/%{name}-%{version}.tar.gz
-# Source0-md5:	372b2e7b40e1cc451833370e19bb4ec7
+Source0:	https://www.prelude-siem.org/attachments/download/1393/%{name}-%{version}.tar.gz
+# Source0-md5:	732c3c67f1a7318d6e64831a2fa5abce
 Patch0:		%{name}-lt.patch
 Patch1:		%{name}-link.patch
 Patch2:		%{name}-python-install.patch
@@ -40,11 +40,11 @@ BuildRequires:	pkgconfig
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.219
 %{?with_sqlite3:BuildRequires:	sqlite3-devel >= 3.0.0}
-BuildRequires:	swig-python
+BuildRequires:	swig-python >= 4.0.1
 Requires(post):	/sbin/ldconfig
 Requires:	%{name}(DB_driver) = %{version}-%{release}
 Requires:	libprelude-libs >= %{version}
-Obsoletes:	perl-libpreludedb
+Obsoletes:	perl-libpreludedb < 1.2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -196,9 +196,14 @@ Wiązania Pythona 3.x do libpreludedb.
 %patch2 -p1
 %patch3 -p1
 
-%if %{with python3}
-%{__rm} bindings/python/{_preludedb.cxx,preludedb.py}
-%endif
+# in case swig regeneration is required:
+#%{__rm} bindings/python/{_preludedb.cxx,preludedb.py}
+# but note that the directory contains modified pystrings.swg from swig
+# (4.0.1 as of libprelude 5.2.0), which might be incompatible with system swig
+# (e.g. 4.0.x vs 4.2.x)
+
+# avoid regeneration for now
+touch bindings/python/_preludedb.cxx
 
 %{__sed} -i -e '1s,/usr/bin/env python,%{?with_python3:%{__python3}}%{!?with_python3:%{__python}},' \
 	preludedb-admin
