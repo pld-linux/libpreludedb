@@ -11,7 +11,7 @@ Summary:	The PreludeDB Library
 Summary(pl.UTF-8):	Biblioteka PreludeDB
 Name:		libpreludedb
 Version:	5.2.0
-Release:	
+Release:	2
 License:	GPL v2 or commercial
 Group:		Libraries
 #Source0Download: https://www.prelude-siem.org/projects/prelude/files
@@ -191,10 +191,10 @@ Wiązania Pythona 3.x do libpreludedb.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
+%patch -P 0 -p1
+%patch -P 1 -p1
+%patch -P 2 -p1
+%patch -P 3 -p1
 
 # in case swig regeneration is required:
 #%{__rm} bindings/python/{_preludedb.cxx,preludedb.py}
