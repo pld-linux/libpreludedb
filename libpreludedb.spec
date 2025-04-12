@@ -11,7 +11,7 @@ Summary:	The PreludeDB Library
 Summary(pl.UTF-8):	Biblioteka PreludeDB
 Name:		libpreludedb
 Version:	5.2.0
-Release:	3
+Release:	4
 License:	GPL v2 or commercial
 Group:		Libraries
 #Source0Download: https://www.prelude-siem.org/projects/prelude/files
@@ -215,7 +215,9 @@ touch bindings/python/_preludedb.cxx
 %{__autoconf}
 %{__autoheader}
 %{__automake}
+# ac_cv_prog_HAVE_CXX=yes is a hack for some broken check
 %configure \
+	ac_cv_prog_HAVE_CXX=yes \
 	--enable-gtk-doc \
 	%{?with_static_libs:--enable-static} \
 	--with-html-dir=%{_gtkdocdir}/libpreludedb \
